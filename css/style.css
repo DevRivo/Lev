@@ -13,7 +13,7 @@ body { font-family: "Cairo", Tahoma, Arial, sans-serif; overflow: hidden; }
 button { font: inherit; }
 .game-shell { position: relative; width: 100%; height: 100svh; min-height: 520px; overflow: hidden; isolation: isolate; background: #090a0e; }
 .background, .background-shade, .red-glow, .fog, .grain { position: absolute; inset: 0; pointer-events: none; }
-.background { z-index: -5; background: url("assets/background.png") center center / cover no-repeat; transform: scale(1.025); animation: slow-zoom 35s ease-in-out infinite alternate; }
+.background { z-index: -5; background: url("../index.png") center center / cover no-repeat; transform: scale(1.025); animation: slow-zoom 35s ease-in-out infinite alternate; }
 .background-shade { z-index: -4; background: linear-gradient(90deg, rgba(2,3,7,.88) 0%, rgba(2,3,7,.62) 34%, rgba(2,3,7,.12) 75%, rgba(2,3,7,.24) 100%), linear-gradient(0deg, rgba(0,0,0,.7), transparent 28%, rgba(0,0,0,.22)); }
 .red-glow { z-index: -3; width: 50%; background: radial-gradient(ellipse at 5% 60%, rgba(170,10,25,.2), transparent 65%); animation: pulse 6s ease-in-out infinite; }
 .fog { z-index: -2; opacity: .12; background: linear-gradient(90deg, transparent, rgba(180,190,205,.22), transparent); filter: blur(28px); width: 130%; left: -15%; right: auto; }
