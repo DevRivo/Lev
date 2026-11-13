@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090d">
+  <title>LEV | ما وراه ليف</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="القائمة الرئيسية للعبة ليف">
+    <div class="background"></div>
+    <div class="background-shade"></div>
+    <div class="red-glow"></div>
+    <div class="fog fog-one"></div>
+    <div class="fog fog-two"></div>
+    <div class="grain"></div>
+
+    <header class="top-bar">
+      <div class="socials" aria-label="حسابات التواصل الاجتماعي">
+        <button class="social" type="button" aria-label="YouTube" title="قريبًا">▶</button>
+        <button class="social social-f" type="button" aria-label="Facebook" title="قريبًا">f</button>
+        <button class="social social-t" type="button" aria-label="TikTok" title="قريبًا">♪</button>
+      </div>
+      <div class="version">نسخة تجريبية</div>
+    </header>
+
+    <section class="menu-panel">
+      <div class="brand">
+        <div class="brand-name" aria-label="LEV">LEV</div>
+        <div class="brand-line"></div>
+        <div class="brand-tagline">ما وراه ليف</div>
+      </div>
+
+      <nav class="main-menu" aria-label="القائمة الرئيسية">
+        <button class="menu-button primary" id="playButton" type="button">
+          <span class="button-icon">▶</span><span>العب</span>
+        </button>
+        <button class="menu-button" id="continueButton" type="button" hidden>
+          <span class="button-icon">↻</span><span>متابعة</span>
+        </button>
+        <button class="menu-button" id="settingsButton" type="button">
+          <span class="button-icon">⚙</span><span>الإعدادات</span>
+        </button>
+        <button class="menu-button" id="helpButton" type="button">
+          <span class="button-icon">?</span><span>المساعدة</span>
+        </button>
+        <button class="menu-button exit-button" id="exitButton" type="button">
+          <span class="button-icon">⏻</span><span>خروج</span>
+        </button>
+      </nav>
+      <p class="menu-hint">كل طريق له حكاية… مش كل حكاية ليها نهاية.</p>
+    </section>
+
+    <footer class="bottom-bar">
+      <span>LEV</span>
+      <span class="footer-dot"></span>
+      <span>تجربة فردية</span>
+    </footer>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" type="button" aria-label="إغلاق">×</button>
+      <div class="modal-mark">LEV</div>
+      <h2 id="modalTitle">العنوان</h2>
+      <div id="modalContent" class="modal-content"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="game.js"></script>
+</body>
+</html>
