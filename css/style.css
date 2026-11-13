@@ -87,3 +87,12 @@ button { font: inherit; }
   border-color: #ef2636;
   color: #ef2636;
 }
+.button-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  min-width: 25px;
+  color: #ef3543;
+  font-size: 19px;
+}
