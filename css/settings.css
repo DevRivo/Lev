@@ -1,247 +1,603 @@
 
-(() => {
-  "use strict";
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
-  const STORAGE_KEY = "lev_settings_v1";
-  const GAME_VERSION = "1.0.0";
+:root {
+  --red: #c51f2b;
+  --red-light: #ef2636;
+  --white: #fff;
+  --muted: #999;
+  --panel: rgba(17,17,17,.95);
+  --border: rgba(255,255,255,.09);
+  --brightness: 1;
+}
 
-  const defaults = {
-    sound: true,
-    musicVolume: 70,
-    effectsVolume: 80,
-    microphone: false,
-    quality: "high",
-    lighting: "high",
-    shadows: true,
-    movementSensitivity: 5,
-    cameraSensitivity: 5,
-    language: "ar-eg",
-    resolution: "auto",
-    brightness: 100,
-    vibration: true
-  };
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  const $ = (id) => document.getElementById(id);
+body {
+  min-height: 100vh;
+  background: #080808;
+  color: var(--white);
+  font-family: 'Cairo', sans-serif;
+}
 
-  function loadSettings() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+.settings-background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: url("../index.png") center / cover no-repeat;
+  filter: brightness(.22);
+}
 
-      return {
-        ...defaults,
-        ...saved,
-        movementSensitivity: saved.movementSensitivity ?? 5,
-        cameraSensitivity: saved.cameraSensitivity ?? 5,
-        microphone: saved.microphone ?? false,
-        lighting: saved.lighting ?? "high",
-        resolution: saved.resolution ?? "auto",
-        brightness: saved.brightness ?? 100,
-        vibration: saved.vibration ?? true
-      };
-    } catch {
-      return { ...defaults };
-    }
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(197,31,43,.16), transparent 45%),
+    linear-gradient(135deg, rgba(0,0,0,.75), rgba(10,10,10,.95));
+}
+
+.settings-container {
+  width: min(1100px, 94%);
+  margin: auto;
+  padding: 25px 0 20px;
+  filter: brightness(var(--brightness));
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid var(--border);
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #ddd;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: rgba(255,255,255,.04);
+  font-size: 13px;
+  transition: .25s;
+}
+
+.back-button:hover {
+  color: white;
+  border-color: var(--red-light);
+  background: rgba(197,31,43,.13);
+}
+
+.header-brand {
+  text-align: left;
+}
+
+.header-brand h1 {
+  color: var(--red-light);
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+
+.header-brand p {
+  color: #aaa;
+  font-size: 11px;
+}
+
+.settings-title {
+  text-align: center;
+  padding: 35px 0 30px;
+}
+
+.title-line {
+  display: block;
+  width: 45px;
+  height: 3px;
+  margin: 0 auto 12px;
+  background: var(--red-light);
+  border-radius: 5px;
+  box-shadow: 0 0 15px var(--red);
+}
+
+.settings-title h2 {
+  font-size: 29px;
+  font-weight: 900;
+}
+
+.settings-title p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 215px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+
+.tab-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #aaa;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: right;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.tab-button i {
+  width: 20px;
+  color: #888;
+  text-align: center;
+}
+
+.tab-button:hover,
+.tab-button.active {
+  color: white;
+  background: rgba(197,31,43,.13);
+  border-color: rgba(239,38,54,.25);
+}
+
+.tab-button.active i {
+  color: var(--red-light);
+}
+
+.settings-panel {
+  min-height: 470px;
+  padding: 25px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  backdrop-filter: blur(12px);
+}
+
+.settings-section {
+  display: none;
+}
+
+.settings-section.active {
+  display: block;
+  animation: appear .3s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-heading {
+  padding-bottom: 18px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-heading h3 {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.section-heading h3 i {
+  color: var(--red-light);
+  margin-left: 8px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 19px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-info strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.setting-info small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  min-width: 48px;
+  height: 25px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  border-radius: 30px;
+  background: #383838;
+  transition: .25s;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  top: 4px;
+  right: 4px;
+  border-radius: 50%;
+  background: white;
+  transition: .25s;
+}
+
+.switch input:checked + .switch-slider {
+  background: var(--red);
+}
+
+.switch input:checked + .switch-slider::before {
+  transform: translateX(-23px);
+}
+
+.range-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(230px, 48%);
+}
+
+.range-control input {
+  width: 100%;
+  accent-color: var(--red-light);
+  cursor: pointer;
+}
+
+.range-control span {
+  min-width: 38px;
+  color: var(--red-light);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+select {
+  min-width: 125px;
+  padding: 9px 12px;
+  border: 1px solid #393939;
+  border-radius: 7px;
+  background: #171717;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+select:focus {
+  border-color: var(--red-light);
+}
+
+.small-action,
+.update-button {
+  padding: 10px 15px;
+  border: 1px solid var(--red);
+  border-radius: 7px;
+  background: rgba(197,31,43,.13);
+  color: #ff6874;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.small-action:hover,
+.update-button:hover {
+  background: var(--red);
+  color: white;
+}
+
+.info-note {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 13px;
+  border: 1px solid rgba(239,38,54,.2);
+  border-radius: 8px;
+  background: rgba(197,31,43,.08);
+  color: #bbb;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.info-note i {
+  color: var(--red-light);
+  margin-top: 4px;
+}
+
+.help-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 17px 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.help-card > i {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--red-light);
+  background: rgba(197,31,43,.13);
+}
+
+.help-card strong {
+  font-size: 13px;
+}
+
+.help-card p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 4px;
+}
+
+.version-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.version-logo {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--red);
+  border-radius: 12px;
+  color: var(--red-light);
+  font-size: 20px;
+  font-weight: 900;
+  box-shadow: 0 0 20px rgba(197,31,43,.13);
+}
+
+.version-card strong {
+  font-size: 15px;
+}
+
+.version-card p {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.version-number {
+  color: var(--red-light);
+  font-size: 13px;
+  font-weight: 800;
+  direction: ltr;
+}
+
+.update-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.update-result {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  margin-top: 13px;
+  line-height: 1.8;
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  color: #83d6a0;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.save-status.show {
+  opacity: 1;
+}
+
+.danger-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 17px;
+  border: 1px solid rgba(239,38,54,.2);
+  border-radius: 9px;
+  background: rgba(197,31,43,.06);
+}
+
+.danger-area strong,
+.danger-area small {
+  display: block;
+}
+
+.danger-area strong {
+  font-size: 13px;
+}
+
+.danger-area small {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.reset-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid var(--red);
+  border-radius: 7px;
+  background: rgba(197,31,43,.13);
+  color: #ff6874;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.reset-button:hover {
+  background: var(--red);
+  color: white;
+}
+
+.settings-footer {
+  padding: 25px 0 5px;
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .settings-container {
+    width: 94%;
+    padding-top: 15px;
   }
 
-  let settings = loadSettings();
-
-  function saveSettings() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-
-      const status = $("saveStatus");
-      status.classList.add("show");
-
-      clearTimeout(saveSettings.timer);
-      saveSettings.timer = setTimeout(() => {
-        status.classList.remove("show");
-      }, 2200);
-    } catch {
-      $("saveStatus").textContent = "تعذر حفظ الإعدادات على هذا المتصفح.";
-      $("saveStatus").classList.add("show");
-    }
+  .settings-layout {
+    grid-template-columns: 1fr;
   }
 
-  function applySettings() {
-    // تطبيق سطوع واجهة الإعدادات
-    document.documentElement.style.setProperty(
-      "--brightness",
-      String(settings.brightness / 100)
-    );
-
-    // اللغة الحالية للعبة
-    document.documentElement.lang = "ar";
-    document.documentElement.dir = "rtl";
-
-    // إعدادات حجم العرض هنا تحفظ كاختيار فقط.
-    // لا يستطيع المتصفح تغيير دقة شاشة الجهاز الفعلية.
+  .settings-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 7px;
   }
 
-  function updateInterface() {
-    $("movementSensitivity").value = settings.movementSensitivity;
-    $("cameraSensitivity").value = settings.cameraSensitivity;
-
-    $("soundEnabled").checked = settings.sound;
-    $("musicVolume").value = settings.musicVolume;
-    $("effectsVolume").value = settings.effectsVolume;
-
-    $("microphoneEnabled").checked = settings.microphone;
-
-    $("quality").value = settings.quality;
-    $("lighting").value = settings.lighting;
-    $("shadows").checked = settings.shadows;
-
-    $("languageChoice").value = settings.language;
-    $("resolution").value = settings.resolution;
-    $("brightness").value = settings.brightness;
-
-    $("vibrationEnabled").checked = settings.vibration;
-
-    $("movementValue").textContent = settings.movementSensitivity;
-    $("cameraValue").textContent = settings.cameraSensitivity;
-    $("musicValue").textContent = settings.musicVolume + "%";
-    $("effectsValue").textContent = settings.effectsVolume + "%";
-    $("brightnessValue").textContent = settings.brightness + "%";
-
-    applySettings();
+  .tab-button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 3px;
+    font-size: 11px;
+    text-align: center;
   }
 
-  function updateSetting(key, value) {
-    settings[key] = value;
-    updateInterface();
-    saveSettings();
+  .tab-button i {
+    font-size: 16px;
   }
 
-  // التنقل بين الأقسام
-  document.querySelectorAll(".tab-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const sectionId = button.dataset.section;
+  .settings-panel {
+    padding: 17px;
+    min-height: 400px;
+  }
 
-      document.querySelectorAll(".tab-button").forEach((tab) => {
-        tab.classList.remove("active");
-      });
+  .setting-item {
+    gap: 10px;
+  }
 
-      document.querySelectorAll(".settings-section").forEach((section) => {
-        section.classList.remove("active");
-      });
+  .setting-info strong {
+    font-size: 12px;
+  }
 
-      button.classList.add("active");
-      $(sectionId).classList.add("active");
-    });
-  });
+  .setting-info small {
+    max-width: 190px;
+    font-size: 10px;
+  }
 
-  // التحكم
-  $("movementSensitivity").addEventListener("input", (event) => {
-    settings.movementSensitivity = Number(event.target.value);
-    $("movementValue").textContent = settings.movementSensitivity;
-    saveSettings();
-  });
+  .range-control {
+    width: 43%;
+  }
 
-  $("cameraSensitivity").addEventListener("input", (event) => {
-    settings.cameraSensitivity = Number(event.target.value);
-    $("cameraValue").textContent = settings.cameraSensitivity;
-    saveSettings();
-  });
+  .range-control span {
+    min-width: 28px;
+  }
 
-  // الصوت
-  $("soundEnabled").addEventListener("change", (event) => {
-    updateSetting("sound", event.target.checked);
-  });
+  select {
+    min-width: 105px;
+    padding: 8px;
+  }
 
-  $("musicVolume").addEventListener("input", (event) => {
-    settings.musicVolume = Number(event.target.value);
-    $("musicValue").textContent = settings.musicVolume + "%";
-    saveSettings();
-  });
+  .settings-title {
+    padding: 25px 0;
+  }
 
-  $("effectsVolume").addEventListener("input", (event) => {
-    settings.effectsVolume = Number(event.target.value);
-    $("effectsValue").textContent = settings.effectsVolume + "%";
-    saveSettings();
-  });
+  .settings-title h2 {
+    font-size: 25px;
+  }
+}
 
-  // الميكروفون
-  $("microphoneEnabled").addEventListener("change", (event) => {
-    updateSetting("microphone", event.target.checked);
-  });
+@media (max-width: 380px) {
+  .settings-tabs {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-  // الجرافيك
-  $("quality").addEventListener("change", (event) => {
-    updateSetting("quality", event.target.value);
-  });
+  .back-button {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
 
-  $("lighting").addEventListener("change", (event) => {
-    updateSetting("lighting", event.target.value);
-  });
+  .header-brand h1 {
+    font-size: 22px;
+  }
 
-  $("shadows").addEventListener("change", (event) => {
-    updateSetting("shadows", event.target.checked);
-  });
-
-  // اللغة
-  $("languageChoice").addEventListener("change", (event) => {
-    updateSetting("language", event.target.value);
-  });
-
-  // الشاشة
-  $("resolution").addEventListener("change", (event) => {
-    updateSetting("resolution", event.target.value);
-  });
-
-  $("brightness").addEventListener("input", (event) => {
-    settings.brightness = Number(event.target.value);
-    $("brightnessValue").textContent = settings.brightness + "%";
-    applySettings();
-    saveSettings();
-  });
-
-  $("fullscreenButton").addEventListener("click", async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-        $("fullscreenButton").textContent = "إلغاء ملء الشاشة";
-      } else {
-        await document.exitFullscreen();
-        $("fullscreenButton").textContent = "تفعيل";
-      }
-    } catch {
-      alert("المتصفح لا يدعم ملء الشاشة في هذه الحالة.");
-    }
-  });
-
-  document.addEventListener("fullscreenchange", () => {
-    $("fullscreenButton").textContent =
-      document.fullscreenElement ? "إلغاء ملء الشاشة" : "تفعيل";
-  });
-
-  // الاهتزاز
-  $("vibrationEnabled").addEventListener("change", (event) => {
-    updateSetting("vibration", event.target.checked);
-  });
-
-  // التحديثات
-  $("currentVersion").textContent = GAME_VERSION;
-
-  $("checkUpdates").addEventListener("click", () => {
-    $("updateResult").textContent =
-      "لم يتم ربط خادم التحديثات بعد. إصدار لعبتك الحالي هو " +
-      GAME_VERSION + ".";
-  });
-
-  // استعادة الإعدادات الافتراضية
-  $("resetSettings").addEventListener("click", () => {
-    const confirmed = window.confirm(
-      "هل تريد استعادة جميع إعدادات ليف إلى الوضع الافتراضي؟"
-    );
-
-    if (!confirmed) return;
-
-    settings = { ...defaults };
-    updateInterface();
-    saveSettings();
-  });
-
-  // تحميل الإعدادات عند فتح الصفحة
-  updateInterface();
-
-})();
+  .danger-area {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
