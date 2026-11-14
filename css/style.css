@@ -96,3 +96,44 @@ button { font: inherit; }
   color: #ef3543;
   font-size: 19px;
 }
+/* LEV Exit Dialog */
+
+.exit-dialog {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.exit-icon {
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 38, 54, .5);
+  border-radius: 50%;
+  background: rgba(197, 31, 43, .12);
+  color: #ef2636;
+  font-size: 30px;
+  box-shadow: 0 0 30px rgba(197, 31, 43, .15);
+}
+
+.exit-dialog p {
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.exit-dialog small {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.action-button.confirm {
+  background: linear-gradient(135deg, #c51f2b, #790d18);
+  border-color: #ef2636;
+}
+
+.action-button.confirm:hover {
+  background: #ef2636;
+}
