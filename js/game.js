@@ -175,7 +175,9 @@ function exitGame() {
 
   playButton.addEventListener("click", startNewGame);
   continueButton.addEventListener("click", continueGame);
-  $("settingsButton").addEventListener("click", openSettings);
+  $("settingsButton").addEventListener("click", () => {
+    window.location.href = "settings.html";
+  });
   $("helpButton").addEventListener("click", openHelp);
   $("exitButton").addEventListener("click", exitGame);
   $("modalClose").addEventListener("click", closeModal);
