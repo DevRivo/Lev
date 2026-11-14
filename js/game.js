@@ -143,20 +143,35 @@
     `, [{ label: "تمام", primary: true, onClick: closeModal }]);
   }
 
-  function exitGame() {
-    showModal(
-      "الخروج",
-      "هل تريد إغلاق اللعبة؟",
-      [
-        { label: "إلغاء", onClick: closeModal },
-        { label: "خروج", primary: true, onClick: () => {
+function exitGame() {
+  showModal(
+    "هل أنت متأكد من الخروج؟",
+    `
+      <div class="exit-dialog">
+        <div class="exit-icon">
+          <i class="fa-solid fa-power-off"></i>
+        </div>
+        <p>هل تريد مغادرة لعبة ليف الآن؟</p>
+        <small>تأكد من حفظ تقدمك قبل الخروج.</small>
+      </div>
+    `,
+    [
+      { label: "العودة للعبة", onClick: closeModal },
+      {
+        label: "نعم، خروج",
+        primary: true,
+        onClick: () => {
           closeModal();
-          // المتصفحات غالبًا تمنع إغلاق التبويب برمجيًا؛ نعرض رسالة واضحة بدلًا من ذلك.
-          showToast("تقدر تقفل صفحة اللعبة من المتصفح.");
-        }}
-      ]
-    );
-  }
+          window.close();
+
+          setTimeout(() => {
+            showToast("يمكنك إغلاق صفحة اللعبة من المتصفح.");
+          }, 300);
+        }
+      }
+    ]
+  );
+}
 
   playButton.addEventListener("click", startNewGame);
   continueButton.addEventListener("click", continueGame);
