@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090909">
+  <title>الإعدادات | LEV</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+  <div class="settings-background"></div>
+  <div class="settings-overlay"></div>
+
+  <main class="settings-container">
+
+    <header class="settings-header">
+      <a href="index.html" class="back-button">
+        <i class="fa-solid fa-arrow-right"></i>
+        <span>العودة للقائمة</span>
+      </a>
+
+      <div class="header-brand">
+        <h1>LEV</h1>
+        <p>ما وراه ليف</p>
+      </div>
+    </header>
+
+    <section class="settings-title">
+      <span class="title-line"></span>
+      <h2>الإعدادات</h2>
+      <p>خصص تجربتك داخل عالم ليف</p>
+    </section>
+
+    <div class="settings-layout">
+
+      <nav class="settings-tabs">
+        <button class="tab-button active" data-section="audio">
+          <i class="fa-solid fa-volume-high"></i>
+          <span>الصوت</span>
+        </button>
+
+        <button class="tab-button" data-section="graphics">
+          <i class="fa-solid fa-display"></i>
+          <span>الرسومات</span>
+        </button>
+
+        <button class="tab-button" data-section="controls">
+          <i class="fa-solid fa-gamepad"></i>
+          <span>التحكم</span>
+        </button>
+
+        <button class="tab-button" data-section="general">
+          <i class="fa-solid fa-sliders"></i>
+          <span>عام</span>
+        </button>
+      </nav>
+
+      <section class="settings-panel">
+
+        <!-- الصوت -->
+        <div class="settings-section active" id="audio">
+          <div class="section-heading">
+            <h3><i class="fa-solid fa-volume-high"></i> إعدادات الصوت</h3>
+            <p>تحكم في الأصوات داخل اللعبة</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>تشغيل الصوت</strong>
+              <small>تشغيل أو إيقاف جميع أصوات اللعبة</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="soundEnabled">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item range-item">
+            <div class="setting-info">
+              <strong>مستوى الموسيقى</strong>
+              <small>صوت الموسيقى الخلفية</small>
+            </div>
+            <div class="range-control">
+              <input type="range" id="musicVolume" min="0" max="100">
+              <span id="musicValue">70%</span>
+            </div>
+          </div>
+
+          <div class="setting-item range-item">
+            <div class="setting-info">
+              <strong>المؤثرات الصوتية</strong>
+              <small>أصوات الحركة والأحداث</small>
+            </div>
+            <div class="range-control">
+              <input type="range" id="effectsVolume" min="0" max="100">
+              <span id="effectsValue">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- الرسومات -->
+        <div class="settings-section" id="graphics">
+          <div class="section-heading">
+            <h3><i class="fa-solid fa-display"></i> إعدادات الرسومات</h3>
+            <p>اختر جودة العرض المناسبة لجهازك</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>جودة الرسومات</strong>
+              <small>تحدد مستوى التفاصيل البصرية</small>
+            </div>
+            <select id="quality">
+              <option value="high">عالية</option>
+              <option value="medium">متوسطة</option>
+              <option value="low">منخفضة</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>الظلال</strong>
+              <small>إظهار الظلال داخل اللعبة</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="shadows">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>وضع الأداء</strong>
+              <small>تقليل بعض التأثيرات لتحسين السلاسة</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="performance">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- التحكم -->
+        <div class="settings-section" id="controls">
+          <div class="section-heading">
+            <h3><i class="fa-solid fa-gamepad"></i> إعدادات التحكم</h3>
+            <p>اضبط طريقة التحكم حسب راحتك</p>
+          </div>
+
+          <div class="setting-item range-item">
+            <div class="setting-info">
+              <strong>حساسية الحركة</strong>
+              <small>سرعة استجابة التحكم</small>
+            </div>
+            <div class="range-control">
+              <input type="range" id="sensitivity" min="1" max="10">
+              <span id="sensitivityValue">5</span>
+            </div>
+          </div>
+
+          <div class="info-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>سيتم تطبيق إعدادات التحكم عند إضافة نظام الحركة الفعلي.</span>
+          </div>
+        </div>
+
+        <!-- عام -->
+        <div class="settings-section" id="general">
+          <div class="section-heading">
+            <h3><i class="fa-solid fa-sliders"></i> إعدادات عامة</h3>
+            <p>خصص شكل وتجربة اللعبة</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>لغة اللعبة</strong>
+              <small>اختر لغة الواجهة</small>
+            </div>
+            <select id="language">
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <strong>حجم النصوص</strong>
+              <small>حجم الكتابة داخل الواجهة</small>
+            </div>
+            <select id="textSize">
+              <option value="small">صغير</option>
+              <option value="medium">متوسط</option>
+              <option value="large">كبير</option>
+            </select>
+          </div>
+
+          <div class="danger-area">
+            <div>
+              <strong>استعادة الإعدادات الافتراضية</strong>
+              <small>إرجاع جميع الخيارات إلى حالتها الأصلية</small>
+            </div>
+            <button id="resetSettings" class="reset-button">
+              <i class="fa-solid fa-rotate-left"></i>
+              استعادة
+            </button>
+          </div>
+        </div>
+
+        <div class="save-status" id="saveStatus">
+          <i class="fa-solid fa-check-circle"></i>
+          تم حفظ الإعدادات
+        </div>
+
+      </section>
+    </div>
+
+    <footer class="settings-footer">
+      LEV © 2026 — ما وراه ليف
+    </footer>
+
+  </main>
+
+  <script src="js/settings.js"></script>
+</body>
+</html>
