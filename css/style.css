@@ -137,3 +137,73 @@ button { font: inherit; }
 .action-button.confirm:hover {
   background: #ef2636;
 }
+/* القائمة الرئيسية - الحالة الافتراضية */
+
+.menu-button,
+.menu-button.primary {
+  border-right-color: transparent;
+  border-color: rgba(255,255,255,.15);
+  background: linear-gradient(
+    90deg,
+    rgba(5,6,10,.88),
+    rgba(5,6,10,.65)
+  );
+
+  color: #f4f1f1;
+  box-shadow: none;
+}
+
+/* الأيقونات باللون الأبيض افتراضيًا */
+
+.button-icon {
+  color: #b8b5b7;
+  transition: .2s ease;
+}
+
+/* الزر الذي تم الضغط عليه فقط */
+
+.menu-button.is-active {
+  border-color: rgba(239,38,54,.65);
+  border-right-color: var(--red-bright);
+
+  background: linear-gradient(
+    90deg,
+    rgba(115,8,20,.88),
+    rgba(25,5,10,.85)
+  );
+
+  color: #fff;
+  box-shadow: 0 0 24px rgba(170,10,25,.17);
+}
+
+.menu-button.is-active .button-icon {
+  color: var(--red-bright);
+}
+
+/* إلغاء اللون الأحمر عند مجرد المرور بالماوس */
+
+.menu-button:hover,
+.menu-button:focus-visible {
+  outline: none;
+  transform: none;
+  border-color: rgba(255,255,255,.15);
+  border-right-color: transparent;
+  background: linear-gradient(
+    90deg,
+    rgba(5,6,10,.88),
+    rgba(5,6,10,.65)
+  );
+  box-shadow: none;
+}
+
+/* منع زر العب من البقاء أحمر بشكل دائم */
+
+.menu-button.primary {
+  border-right-color: transparent;
+}
+
+/* الرجوع للحالة الطبيعية */
+
+.menu-button:not(.is-active) .button-icon {
+  color: #b8b5b7;
+}
