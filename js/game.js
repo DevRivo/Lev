@@ -293,36 +293,10 @@
     );
   }
 
-  // المساعدة
-  function openHelp() {
-    showModal(
-      "المساعدة",
-      `
-        <p>استخدم أزرار القائمة للتنقل بين أقسام اللعبة.</p>
-
-        <p><strong>العب:</strong> بدء مغامرة جديدة.</p>
-
-        <p>
-          <strong>متابعة:</strong>
-          استكمال آخر تقدم محفوظ، ولن يظهر قبل وجود حفظ.
-        </p>
-
-        <p>
-          <strong>الإعدادات:</strong>
-          التحكم في الخيارات المتاحة للعبة.
-        </p>
-
-        <p>اللعبة ما زالت في مرحلة بناء النموذج الأولي.</p>
-      `,
-      [
-        {
-          label: "تمام",
-          primary: true,
-          onClick: closeModal
-        }
-      ]
-    );
-  }
+// زر المساعدة
+helpButton.addEventListener("click", () => {
+  window.location.href = "help.html";
+});
 
   // الخروج
   function exitGame() {
