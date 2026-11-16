@@ -1,121 +1,122 @@
+/* ========================================
+   LEV - HELP PAGE JAVASCRIPT
+   ======================================== */
+
 (() => {
+  "use strict";
 
-  const buttons = document.querySelectorAll(".nav-item");
+  document.addEventListener("DOMContentLoaded", () => {
 
-  const sections = document.querySelectorAll(".help-section");
+    // عناصر القائمة
+    const navItems = document.querySelectorAll(".nav-item");
 
-  const breadcrumb = document.getElementById("breadcrumb");
+    // أقسام المساعدة
+    const sections = document.querySelectorAll(".help-section");
 
+    // عنوان القسم الحالي
+    const breadcrumb = document.getElementById("breadcrumb");
 
-  function showSection(id) {
-
-    const target = document.getElementById(id);
-
-    if (!target) return;
-
-
-    // إخفاء جميع الأقسام وإظهار القسم المطلوب
-
-    sections.forEach(section => {
-
-      section.classList.toggle(
-        "active",
-        section.id === id
-      );
-
-    });
-
-
-    // تحديث القائمة الجانبية
-
-    buttons.forEach(button => {
-
-      button.classList.toggle(
-        "active",
-        button.dataset.section === id
-      );
-
-    });
-
-
-    // تحديث اسم القسم بالأعلى
-
-    const activeButton = document.querySelector(
-      `.nav-item[data-section="${id}"]`
-    );
-
-    if (activeButton && breadcrumb) {
-
-      breadcrumb.textContent =
-        activeButton.innerText.trim();
-
+    // التأكد من وجود العناصر
+    if (!navItems.length || !sections.length || !breadcrumb) {
+      console.error("LEV Help: لم يتم العثور على عناصر صفحة المساعدة.");
+      return;
     }
 
+    // تغيير القسم
+    function showSection(sectionId) {
 
-    // تحريك الشاشة للمحتوى على الموبايل
+      const targetSection = document.getElementById(sectionId);
 
-    if (window.innerWidth <= 850) {
+      // التأكد أن القسم موجود
+      if (!targetSection || !targetSection.classList.contains("help-section")) {
+        return;
+      }
 
-      document
-        .querySelector(".content-panel")
-        .scrollIntoView({
+      // إخفاء جميع الأقسام وإزالة التحديد
+      sections.forEach((section) => {
+        section.classList.remove("active");
+      });
+
+      navItems.forEach((item) => {
+        item.classList.remove("active");
+        item.removeAttribute("aria-current");
+      });
+
+      // إظهار القسم المطلوب
+      targetSection.classList.add("active");
+
+      // تحديد زر القسم
+      const activeButton = document.querySelector(
+        `.nav-item[data-section="${sectionId}"]`
+      );
+
+      if (activeButton) {
+        activeButton.classList.add("active");
+        activeButton.setAttribute("aria-current", "page");
+        breadcrumb.textContent = activeButton.textContent.trim();
+      }
+
+      // إغلاق الأسئلة المفتوحة عند تغيير القسم
+      closeOtherFaqs();
+
+      // الرجوع لأعلى محتوى الصفحة
+      const contentPanel = document.querySelector(".content-panel");
+
+      if (contentPanel) {
+        contentPanel.scrollIntoView({
           behavior: "smooth",
           block: "start"
         });
+      }
+    }
+
+    // الضغط على أزرار القائمة
+    navItems.forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        const sectionId = button.dataset.section;
+
+        showSection(sectionId);
+
+      });
+
+    });
+
+    // إغلاق الأسئلة الأخرى عند فتح سؤال جديد
+    const faqItems = document.querySelectorAll(".faq-list details");
+
+    faqItems.forEach((item) => {
+
+      item.addEventListener("toggle", () => {
+
+        if (item.open) {
+
+          faqItems.forEach((otherItem) => {
+
+            if (otherItem !== item) {
+              otherItem.open = false;
+            }
+
+          });
+
+        }
+
+      });
+
+    });
+
+    // إغلاق الأسئلة المفتوحة
+    function closeOtherFaqs() {
+
+      faqItems.forEach((item) => {
+        item.open = false;
+      });
 
     }
 
-  }
-
-
-  // الضغط على الأقسام
-
-  buttons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      showSection(button.dataset.section);
-
-    });
-
-  });
-
-
-  // فتح قسم محدد من الرابط
-
-  const requestedSection =
-    window.location.hash.replace("#", "");
-
-  if (requestedSection) {
-
-    showSection(requestedSection);
-
-  }
-
-
-  // جعل سؤال واحد فقط مفتوحًا في الأسئلة الشائعة
-
-  const faqItems = document.querySelectorAll(".faq-list details");
-
-  faqItems.forEach(item => {
-
-    item.addEventListener("toggle", () => {
-
-      if (item.open) {
-
-        faqItems.forEach(other => {
-
-          if (other !== item) {
-
-            other.open = false;
-
-          }
-
-        });
-
-      }
-
-    });
+    // عرض أول قسم عند فتح الصفحة
+    showSection("how-to");
 
   });
 
