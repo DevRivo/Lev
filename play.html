@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#08090d">
+
+  <title>ليف | بداية حياة عادل</title>
+
+  <link rel="stylesheet" href="css/play.css">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <main id="game">
+
+    <div id="loading">جاري تجهيز عالم ليف...</div>
+
+    <div class="game-info">
+      <div class="game-logo">LEV</div>
+      <div class="day-info">اليوم الأول | 8:00 صباحًا</div>
+    </div>
+
+    <div id="crosshair">+</div>
+
+    <div id="message" class="message">
+      أنت الآن داخل شقة عادل.
+    </div>
+
+    <div class="controls">
+
+      <div id="joystick" class="joystick">
+        <div id="joystick-knob" class="joystick-knob"></div>
+      </div>
+
+      <div id="look-hint">اسحب هنا للنظر</div>
+
+      <button id="interactButton" class="interact-button">
+        تفاعل
+      </button>
+
+    </div>
+
+    <button id="backButton" class="back-button">
+      القائمة الرئيسية
+    </button>
+
+  </main>
+
+  <script type="module" src="js/play.js"></script>
+
+</body>
+</html>
