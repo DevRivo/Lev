@@ -1,27 +1,29 @@
 /* LEV Main Menu
-   حفظ التقدم محليًا باستخدام localStorage.
+   القائمة الرئيسية ونظام حفظ التقدم والتنقل إلى عالم اللعبة.
 */
+
 (() => {
   "use strict";
 
   const SAVE_KEY = "lev_save_v1";
-  const SETTINGS_KEY = "lev_settings_v1";
 
   const $ = (id) => document.getElementById(id);
 
+  // أزرار القائمة
   const playButton = $("playButton");
   const continueButton = $("continueButton");
   const settingsButton = $("settingsButton");
   const helpButton = $("helpButton");
   const exitButton = $("exitButton");
 
+  // عناصر النوافذ
   const modalBackdrop = $("modalBackdrop");
   const modalTitle = $("modalTitle");
   const modalContent = $("modalContent");
   const modalActions = $("modalActions");
   const toast = $("toast");
 
-  // التأكد من وجود العناصر الأساسية
+  // التأكد من وجود العناصر
   if (
     !playButton ||
     !continueButton ||
@@ -38,7 +40,6 @@
     return;
   }
 
-  // جميع أزرار القائمة
   const menuButtons = [
     playButton,
     continueButton,
@@ -47,7 +48,7 @@
     exitButton
   ];
 
-  // تحديد الزر الذي تم الضغط عليه فقط
+  // تحديد الزر النشط
   function setActiveButton(activeButton) {
     menuButtons.forEach((button) => {
       button.classList.remove("is-active");
@@ -58,14 +59,14 @@
     }
   }
 
-  // إعادة جميع الأزرار إلى اللون الأسود
+  // إعادة الأزرار إلى حالتها الطبيعية
   function clearActiveButton() {
     menuButtons.forEach((button) => {
       button.classList.remove("is-active");
     });
   }
 
-  // قراءة التقدم المحفوظ
+  // قراءة الحفظ
   function readSave() {
     try {
       const raw = localStorage.getItem(SAVE_KEY);
@@ -75,12 +76,14 @@
       const data = JSON.parse(raw);
 
       return data && data.hasProgress === true ? data : null;
-    } catch {
+
+    } catch (error) {
+      console.error("LEV: تعذر قراءة الحفظ.", error);
       return null;
     }
   }
 
-  // إظهار زر متابعة عند وجود تقدم محفوظ فقط
+  // تحديث زر متابعة
   function refreshContinueButton() {
     continueButton.hidden = !readSave();
   }
@@ -88,17 +91,27 @@
   // حفظ التقدم
   function saveProgress(progress = {}) {
     const current = {
+      ...progress,
       hasProgress: true,
-      checkpoint: progress.checkpoint || "بداية اللعبة",
-      updatedAt: new Date().toISOString(),
-      ...progress
+      checkpoint: progress.checkpoint || "بداية اليوم الأول",
+      updatedAt: new Date().toISOString()
     };
 
-    localStorage.setItem(SAVE_KEY, JSON.stringify(current));
+    try {
+      localStorage.setItem(
+        SAVE_KEY,
+        JSON.stringify(current)
+      );
 
-    refreshContinueButton();
+      refreshContinueButton();
 
-    return current;
+      return current;
+
+    } catch (error) {
+      console.error("LEV: تعذر حفظ التقدم.", error);
+      showToast("تعذر حفظ التقدم على الجهاز.");
+      return null;
+    }
   }
 
   // إنشاء نافذة منبثقة
@@ -111,7 +124,9 @@
       const button = document.createElement("button");
 
       button.type = "button";
-      button.className = `action-button ${action.primary ? "confirm" : ""}`;
+      button.className =
+        `action-button ${action.primary ? "confirm" : ""}`;
+
       button.textContent = action.label;
 
       button.addEventListener("click", action.onClick);
@@ -122,13 +137,13 @@
     modalBackdrop.hidden = false;
   }
 
-  // إغلاق النافذة وإعادة الألوان
+  // إغلاق النافذة
   function closeModal() {
     modalBackdrop.hidden = true;
     clearActiveButton();
   }
 
-  // إشعار صغير
+  // إشعار
   function showToast(message) {
     toast.textContent = message;
     toast.classList.add("show");
@@ -140,7 +155,7 @@
     }, 2600);
   }
 
-  // حماية النصوص قبل عرضها داخل HTML
+  // حماية النصوص
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, (char) => ({
       "&": "&amp;",
@@ -153,28 +168,16 @@
 
   // بدء لعبة جديدة
   function startNewGame() {
-    showModal(
-      "لعبة جديدة",
-      `
-        <p>
-          هنا هتبدأ رحلة عادل من أول يوم في الشقة.
-        </p>
-        <p>
-          مرحلة اللعب نفسها لسه تحت التطوير،
-          ولما نضيفها هنربطها بنظام الحفظ ونحدد أول نقطة حفظ فعلية.
-        </p>
-      `,
-      [
-        {
-          label: "رجوع للقائمة",
-          primary: true,
-          onClick: closeModal
-        }
-      ]
-    );
+    saveProgress({
+      checkpoint: "بداية اليوم الأول",
+      scene: "apartment",
+      day: 1
+    });
+
+    window.location.href = "play.html?mode=new";
   }
 
-  // متابعة آخر تقدم محفوظ
+  // متابعة آخر تقدم
   function continueGame() {
     const save = readSave();
 
@@ -185,123 +188,13 @@
       return;
     }
 
-    const date = save.updatedAt
-      ? new Date(save.updatedAt).toLocaleString("ar-EG")
-      : "";
-
-    showModal(
-      "متابعة اللعبة",
-      `
-        <p>
-          آخر نقطة حفظ:
-          <strong>${escapeHtml(save.checkpoint || "نقطة محفوظة")}</strong>
-        </p>
-
-        ${date ? `<small>آخر حفظ: ${escapeHtml(date)}</small>` : ""}
-
-        <br><br>
-
-        <p>
-          هنربط الزر ده بتحميل المرحلة المحفوظة عند إضافة نظام اللعب.
-        </p>
-      `,
-      [
-        {
-          label: "رجوع للقائمة",
-          primary: true,
-          onClick: closeModal
-        }
-      ]
-    );
+    window.location.href = "play.html?mode=continue";
   }
-
-  // قراءة الإعدادات
-  function readSettings() {
-    try {
-      return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
-        sound: true,
-        quality: "high"
-      };
-    } catch {
-      return {
-        sound: true,
-        quality: "high"
-      };
-    }
-  }
-
-  // نافذة إعدادات مؤقتة
-  function openSettings() {
-    const settings = readSettings();
-
-    showModal(
-      "الإعدادات",
-      `
-        <label class="setting-row">
-          <span>المؤثرات الصوتية</span>
-          <input
-            id="soundSetting"
-            type="checkbox"
-            ${settings.sound ? "checked" : ""}
-          >
-        </label>
-
-        <label class="setting-row">
-          <span>جودة العرض</span>
-
-          <select id="qualitySetting">
-            <option value="high" ${settings.quality === "high" ? "selected" : ""}>
-              عالية
-            </option>
-
-            <option value="medium" ${settings.quality === "medium" ? "selected" : ""}>
-              متوسطة
-            </option>
-
-            <option value="low" ${settings.quality === "low" ? "selected" : ""}>
-              منخفضة
-            </option>
-          </select>
-        </label>
-
-        <small>
-          الإعدادات دي مبدئية، وسيتم ربطها بالصوت والجرافيك الفعليين أثناء تطوير اللعبة.
-        </small>
-      `,
-      [
-        {
-          label: "حفظ",
-          primary: true,
-          onClick: () => {
-            const next = {
-              sound: $("soundSetting").checked,
-              quality: $("qualitySetting").value
-            };
-
-            localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
-
-            closeModal();
-
-            showToast("تم حفظ الإعدادات.");
-          }
-        },
-        {
-          label: "إلغاء",
-          onClick: closeModal
-        }
-      ]
-    );
-  }
-
-// زر المساعدة
-helpButton.addEventListener("click", () => {
-  window.location.href = "help.html";
-});
 
   // الخروج
   function exitGame() {
     showModal(
-      "هل أنت متأكد من الخروج؟",
+      "الخروج",
       `
         <div class="exit-dialog">
 
@@ -311,7 +204,9 @@ helpButton.addEventListener("click", () => {
 
           <p>هل تريد مغادرة لعبة ليف الآن؟</p>
 
-          <small>تأكد من حفظ تقدمك قبل الخروج.</small>
+          <small>
+            تأكد من حفظ تقدمك قبل الخروج.
+          </small>
 
         </div>
       `,
@@ -328,7 +223,9 @@ helpButton.addEventListener("click", () => {
 
             window.close();
 
-            showToast("يمكنك إغلاق صفحة اللعبة من المتصفح.");
+            showToast(
+              "يمكنك إغلاق صفحة اللعبة من المتصفح."
+            );
           }
         }
       ]
@@ -337,26 +234,22 @@ helpButton.addEventListener("click", () => {
 
   // زر العب
   playButton.addEventListener("click", () => {
-    setActiveButton(playButton);
     startNewGame();
   });
 
   // زر متابعة
   continueButton.addEventListener("click", () => {
-    setActiveButton(continueButton);
     continueGame();
   });
 
   // زر الإعدادات
   settingsButton.addEventListener("click", () => {
-    setActiveButton(settingsButton);
     window.location.href = "settings.html";
   });
 
   // زر المساعدة
   helpButton.addEventListener("click", () => {
-    setActiveButton(helpButton);
-    openHelp();
+    window.location.href = "help.html";
   });
 
   // زر الخروج
@@ -366,39 +259,52 @@ helpButton.addEventListener("click", () => {
   });
 
   // إغلاق النافذة
-  $("modalClose").addEventListener("click", closeModal);
+  const modalClose = $("modalClose");
 
+  if (modalClose) {
+    modalClose.addEventListener("click", closeModal);
+  }
+
+  // الضغط خارج النافذة
   modalBackdrop.addEventListener("click", (event) => {
     if (event.target === modalBackdrop) {
       closeModal();
     }
   });
 
-  // إغلاق النافذة بزر Escape
+  // زر Escape
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modalBackdrop.hidden) {
+    if (
+      event.key === "Escape" &&
+      !modalBackdrop.hidden
+    ) {
       closeModal();
     }
   });
 
-  // عند الرجوع إلى القائمة الرئيسية
+  // عند الرجوع للقائمة
   window.addEventListener("pageshow", () => {
     clearActiveButton();
     refreshContinueButton();
   });
 
-  // وظائف متاحة لنظام اللعب مستقبلًا
+  // وظائف الحفظ المتاحة لباقي أجزاء اللعبة
   window.LEV = {
     saveProgress,
     getSave: readSave,
 
     clearSave() {
-      localStorage.removeItem(SAVE_KEY);
-      refreshContinueButton();
+      try {
+        localStorage.removeItem(SAVE_KEY);
+        refreshContinueButton();
+        showToast("تم حذف التقدم المحفوظ.");
+      } catch (error) {
+        console.error("LEV: تعذر حذف الحفظ.", error);
+      }
     }
   };
 
-  // تشغيل التحديث الأولي
+  // التشغيل الأول
   refreshContinueButton();
   clearActiveButton();
 
